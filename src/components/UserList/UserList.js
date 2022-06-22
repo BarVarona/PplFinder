@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import * as S from "./style";
 
-const UserList = ({ users, isLoading }) => {
+const UserList = ({ users, isLoading, toggleUser, checkIfFavorite , fetchUsers  }) => {
   const [hoveredUserId, setHoveredUserId] = useState();
   const [filters,setFilters]= useState([]);
 
@@ -20,14 +20,21 @@ const UserList = ({ users, isLoading }) => {
 
   const handleFiltersChange = (value)=>{
     if(filters.includes(value)){
-      setFilters(filters.filter(item=>item!==value))
+      setFilters(filters.filter(item=>item!==value));
     }
     else{
-      setFilters([...filters,value])
+      setFilters([...filters,value]);
     }
   }
 
-  const filteredUsers = filters.length===0?users:users.filter(user=>filters.includes(user.nat))
+  const handleScroll = (ev) => {
+    const {scrollTop, clientHeight, scrollHeight} = ev.currentTarget;
+    if(Math.round(scrollHeight) - Math.round(scrollTop) - 1  <= Math.round(clientHeight)){
+      if(fetchUsers) fetchUsers();
+    }
+  }
+
+  const filteredUsers = filters.length===0?users:users.filter(user=>filters.includes(user.nat));
   return (
     <S.UserList>
       <S.Filters>
@@ -37,7 +44,7 @@ const UserList = ({ users, isLoading }) => {
         <CheckBox value="DE" label="Germany" onChange={handleFiltersChange} />
         <CheckBox value="NZ" label="New Zealand" onChange={handleFiltersChange} />
       </S.Filters>
-      <S.List>
+      <S.List onScroll={handleScroll} >
         {filteredUsers.map((user, index) => {
           return (
             <S.User
@@ -58,8 +65,8 @@ const UserList = ({ users, isLoading }) => {
                   {user?.location.city} {user?.location.country}
                 </Text>
               </S.UserInfo>
-              <S.IconButtonWrapper isVisible={index === hoveredUserId}>
-                <IconButton>
+              <S.IconButtonWrapper isVisible={index === hoveredUserId || checkIfFavorite(user)}>
+                <IconButton onClick={()=>toggleUser(user)}>
                   <FavoriteIcon color="error" />
                 </IconButton>
               </S.IconButtonWrapper>
@@ -73,7 +80,7 @@ const UserList = ({ users, isLoading }) => {
         )}
       </S.List>
     </S.UserList>
-  );
-};
+    );
+  };
 
 export default UserList;

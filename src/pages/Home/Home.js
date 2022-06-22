@@ -1,11 +1,12 @@
 import React from "react";
 import Text from "components/Text";
 import UserList from "components/UserList";
-import { usePeopleFetch } from "hooks";
+import { usePeopleFetch,useFavorites } from "hooks";
 import * as S from "./style";
 
 const Home = () => {
-  const { users, isLoading } = usePeopleFetch();
+  const { users, isLoading, fetchUsers  } = usePeopleFetch();
+  const {toggleUser,checkIfFavorite}=useFavorites();
 
   return (
     <S.Home>
@@ -15,7 +16,7 @@ const Home = () => {
             PplFinder
           </Text>
         </S.Header>
-        <UserList users={users} isLoading={isLoading} />
+        <UserList users={users} isLoading={isLoading} toggleUser={toggleUser} checkIfFavorite={checkIfFavorite} fetchUsers={fetchUsers} />
       </S.Content>
     </S.Home>
   );
