@@ -1,7 +1,7 @@
 import {useLocalStorage } from "./useLocalStorage";
 
 export function useFavorites(){
-const [favUsers,setFavUsers] = useLocalStorage('favoritesUsers',{}) 
+const [favUsers,setFavUsers] = useLocalStorage('favoritesUsers',[]) 
 
 function toggleUser(user){
     if (favUsers.includes(user)) {
@@ -16,5 +16,5 @@ function checkIfFavorite(userEmail){
     
 }
 
-return {toggleUser, favList:Object.values(favUsers) , checkIfFavorite};
+return {toggleUser, favList:(favUsers) , checkIfFavorite};
 }
